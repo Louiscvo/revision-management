@@ -267,6 +267,178 @@
         .mode-card h4 {
             margin-top: 0;
         }
+
+        /* Quiz Styles */
+        .quiz-question {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .quiz-question.correct {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+
+        .quiz-question.incorrect {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .quiz-options {
+            margin: 15px 0;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin: 8px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .quiz-option:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .quiz-option input[type="radio"] {
+            margin-right: 12px;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+        }
+
+        .quiz-option.selected {
+            background: #e7f3ff;
+            border-color: #667eea;
+        }
+
+        .quiz-option.correct-answer {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .quiz-option.wrong-answer {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .check-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .check-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.4);
+        }
+
+        .check-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .score-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-weight: 600;
+            z-index: 1000;
+            display: none;
+        }
+
+        .score-display.show {
+            display: block;
+        }
+
+        .final-score {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 30px 0;
+            display: none;
+        }
+
+        .final-score.show {
+            display: block;
+        }
+
+        .final-score h3 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .reset-btn {
+            background: white;
+            color: #667eea;
+            border: 2px solid white;
+            padding: 12px 35px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .reset-btn:hover {
+            background: #f8f9fa;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .score-display {
+                top: 10px;
+                right: 10px;
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -985,10 +1157,14 @@
 
             <!-- QUIZ -->
             <div id="quiz" class="section">
-                <h2>📝 Quiz de Révision Complet</h2>
+                <div class="score-display" id="scoreDisplay">
+                    Score: <span id="currentScore">0</span>/<span id="totalQuestions">20</span>
+                </div>
+
+                <h2>📝 Quiz Interactif - QCM</h2>
 
                 <div class="highlight">
-                    <p><strong>Instructions :</strong> Testez vos connaissances ! Essayez de répondre aux questions avant de vérifier les réponses dans les sections du cours.</p>
+                    <p><strong>Instructions :</strong> Choisissez la bonne réponse pour chaque question et cliquez sur "Vérifier". Votre score s'affichera automatiquement !</p>
                 </div>
 
                 <h3>🎯 PARTIE 1 : Les Rôles et Fonctions du Manager</h3>
@@ -1331,6 +1507,10 @@
     </div>
 
     <script>
+        let score = 0;
+        let questionsAnswered = new Set();
+        const totalQuestions = 20;
+
         function showSection(sectionId) {
             // Hide all sections
             document.querySelectorAll('.section').forEach(section => {
@@ -1348,9 +1528,169 @@
             // Add active class to clicked button
             event.target.classList.add('active');
 
+            // Show/hide score display
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            if (sectionId === 'quiz' && scoreDisplay) {
+                scoreDisplay.classList.add('show');
+            } else if (scoreDisplay) {
+                scoreDisplay.classList.remove('show');
+            }
+
             // Scroll to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+
+        function checkAnswer(questionNum) {
+            const question = document.querySelector(`.quiz-question[data-question="${questionNum}"]`);
+            const selectedOption = question.querySelector('input[type="radio"]:checked');
+
+            if (!selectedOption) {
+                alert('Veuillez sélectionner une réponse !');
+                return;
+            }
+
+            const correctAnswer = question.dataset.correct;
+            const userAnswer = selectedOption.value;
+            const feedback = question.querySelector('.feedback');
+            const checkBtn = question.querySelector('.check-btn');
+
+            // Disable button and radio buttons
+            checkBtn.disabled = true;
+            question.querySelectorAll('input[type="radio"]').forEach(input => {
+                input.disabled = true;
+            });
+
+            // Check if already answered
+            if (questionsAnswered.has(questionNum)) {
+                return; // Already answered, don't count again
+            }
+
+            if (userAnswer === correctAnswer) {
+                question.classList.add('correct');
+                feedback.classList.add('show', 'correct');
+                feedback.innerHTML = '✅ Correct ! Excellent travail !';
+                selectedOption.parentElement.classList.add('correct-answer');
+
+                // Increment score only if not already answered
+                score++;
+                questionsAnswered.add(questionNum);
+            } else {
+                question.classList.add('incorrect');
+                feedback.classList.add('show', 'incorrect');
+                feedback.innerHTML = `❌ Incorrect. La bonne réponse était : ${getCorrectAnswerText(question, correctAnswer)}`;
+                selectedOption.parentElement.classList.add('wrong-answer');
+                question.querySelector(`input[value="${correctAnswer}"]`).parentElement.classList.add('correct-answer');
+
+                questionsAnswered.add(questionNum);
+            }
+
+            // Update score display
+            updateScoreDisplay();
+
+            // Check if all questions answered
+            if (questionsAnswered.size === totalQuestions) {
+                showFinalScore();
+            }
+        }
+
+        function getCorrectAnswerText(question, correctValue) {
+            const correctOption = question.querySelector(`input[value="${correctValue}"]`);
+            return correctOption.parentElement.querySelector('span').textContent;
+        }
+
+        function updateScoreDisplay() {
+            const currentScoreEl = document.getElementById('currentScore');
+            if (currentScoreEl) {
+                currentScoreEl.textContent = score;
+            }
+        }
+
+        function showFinalScore() {
+            const finalScoreDiv = document.getElementById('finalScore');
+            const finalScoreText = document.getElementById('finalScoreText');
+            const performanceText = document.getElementById('performanceText');
+
+            if (finalScoreDiv && finalScoreText && performanceText) {
+                finalScoreText.textContent = `${score}/${totalQuestions}`;
+
+                let performance = '';
+                if (score >= 18) {
+                    performance = '🌟 Excellent ! Vous maîtrisez parfaitement le cours !';
+                } else if (score >= 15) {
+                    performance = '👍 Très bien ! Quelques petites révisions suffisent.';
+                } else if (score >= 12) {
+                    performance = '📚 Bien ! Revoyez certains points.';
+                } else if (score >= 10) {
+                    performance = '📖 Moyen. Relisez les sections difficiles.';
+                } else {
+                    performance = '💪 À revoir. Recommencez les révisions depuis le début.';
+                }
+
+                performanceText.textContent = performance;
+                finalScoreDiv.classList.add('show');
+
+                // Scroll to final score
+                setTimeout(() => {
+                    finalScoreDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 500);
+            }
+        }
+
+        function resetQuiz() {
+            score = 0;
+            questionsAnswered.clear();
+
+            // Reset all questions
+            document.querySelectorAll('.quiz-question').forEach(question => {
+                question.classList.remove('correct', 'incorrect');
+                question.querySelectorAll('input[type="radio"]').forEach(input => {
+                    input.checked = false;
+                    input.disabled = false;
+                });
+                question.querySelectorAll('.quiz-option').forEach(option => {
+                    option.classList.remove('selected', 'correct-answer', 'wrong-answer');
+                });
+                const feedback = question.querySelector('.feedback');
+                if (feedback) {
+                    feedback.classList.remove('show', 'correct', 'incorrect');
+                    feedback.innerHTML = '';
+                }
+                const checkBtn = question.querySelector('.check-btn');
+                if (checkBtn) {
+                    checkBtn.disabled = false;
+                }
+            });
+
+            // Hide final score
+            const finalScoreDiv = document.getElementById('finalScore');
+            if (finalScoreDiv) {
+                finalScoreDiv.classList.remove('show');
+            }
+
+            // Reset score display
+            updateScoreDisplay();
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Add click handler for quiz options
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.quiz-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input[type="radio"]');
+                    if (radio && !radio.disabled) {
+                        radio.checked = true;
+                        // Remove selected class from all options in this question
+                        this.closest('.quiz-options').querySelectorAll('.quiz-option').forEach(opt => {
+                            opt.classList.remove('selected');
+                        });
+                        // Add selected class to this option
+                        this.classList.add('selected');
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>
