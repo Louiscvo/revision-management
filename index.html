@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Révision Management & Communication</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        nav {
+            background: #f8f9fa;
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        nav button {
+            padding: 10px 20px;
+            border: none;
+            background: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        nav button:hover, nav button.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.4);
+        }
+
+        .content {
+            padding: 30px 20px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-left: 4px solid #667eea;
+            padding-left: 15px;
+        }
+
+        h3 {
+            color: #764ba2;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        h4 {
+            color: #495057;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .card h4 {
+            margin-top: 0;
+            color: #667eea;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+        }
+
+        .disc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .disc-card {
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+        }
+
+        .disc-card.dominance { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .disc-card.influence { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .disc-card.stabilite { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .disc-card.conformite { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+
+        .disc-card h4 {
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .process-step {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .process-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .quiz-card {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #0066cc;
+        }
+
+        .quiz-card h4 {
+            color: #0066cc;
+            margin-bottom: 10px;
+        }
+
+        strong {
+            color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            header h1 {
+                font-size: 1.5em;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            h3 {
+                font-size: 1.2em;
+            }
+
+            nav {
+                padding: 10px;
+            }
+
+            nav button {
+                padding: 8px 15px;
+                font-size: 0.85em;
+            }
+
+            .content {
+                padding: 20px 15px;
+            }
+
+            .disc-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .mode-grid {
+            display: grid;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .mode-card {
+            padding: 20px;
+            border-radius: 10px;
+            background: white;
+            border-left: 4px solid;
+        }
+
+        .mode-card.directif { border-color: #dc3545; }
+        .mode-card.persuasif { border-color: #ffc107; }
+        .mode-card.delegatif { border-color: #17a2b8; }
+        .mode-card.participatif { border-color: #28a745; }
+
+        .mode-card h4 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Révision Management & Communication</h1>
+            <p>Votre guide de révision interactif</p>
+        </header>
+
+        <nav>
+            <button onclick="showSection('home')" class="active">Accueil</button>
+            <button onclick="showSection('roles')">Rôles Manager</button>
+            <button onclick="showSection('modes')">Modes Management</button>
+            <button onclick="showSection('disc')">Modèle DISC</button>
+            <button onclick="showSection('communication')">Communication</button>
+            <button onclick="showSection('obstacles')">Obstacles</button>
+            <button onclick="showSection('quiz')">Quiz</button>
+        </nav>
+
+        <div class="content">
+            <!-- HOME -->
+            <div id="home" class="section active">
+                <h2>Bienvenue sur votre espace de révision</h2>
+
+                <div class="highlight">
+                    <strong>📱 Site optimisé pour mobile !</strong>
+                    <p>Vous pouvez réviser partout, à tout moment depuis votre téléphone.</p>
+                </div>
+
+                <h3>Contenu du cours</h3>
+
+                <div class="card">
+                    <h4>🎯 Module 1 : Le Management</h4>
+                    <ul>
+                        <li>Les 10 rôles du manager (Mintzberg)</li>
+                        <li>Les 4 modes de management</li>
+                        <li>La délégation et le contrôle</li>
+                        <li>L'évaluation des compétences</li>
+                        <li>Le modèle DISC</li>
+                        <li>La motivation</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h4>💬 Module 2 : La Communication</h4>
+                    <ul>
+                        <li>Le processus de communication (7 étapes)</li>
+                        <li>Les 6 obstacles à la communication</li>
+                        <li>La communication éthique</li>
+                        <li>L'écoute active</li>
+                        <li>Techniques pour communiquer efficacement</li>
+                    </ul>
+                </div>
+
+                <div class="highlight">
+                    <strong>💡 Conseil :</strong>
+                    <p>Utilisez la navigation en haut pour accéder directement aux différentes sections !</p>
+                </div>
+            </div>
+
+            <!-- ROLES DU MANAGER -->
+            <div id="roles" class="section">
+                <h2>Les 10 rôles du manager selon Mintzberg</h2>
+
+                <div class="card">
+                    <h4>👥 Rôles interpersonnels</h4>
+                    <ul>
+                        <li><strong>Symbole</strong> : représente l'organisation</li>
+                        <li><strong>Leader</strong> : motive et dirige l'équipe</li>
+                        <li><strong>Agent de liaison</strong> : crée et maintient des relations</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h4>📊 Rôles informationnels</h4>
+                    <ul>
+                        <li><strong>Observateur actif</strong> : collecte l'information</li>
+                        <li><strong>Diffuseur</strong> : transmet l'information dans l'organisation</li>
+                        <li><strong>Porte-parole</strong> : communique à l'extérieur</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h4>⚡ Rôles décisionnels</h4>
+                    <ul>
+                        <li><strong>Entrepreneur</strong> : initie le changement</li>
+                        <li><strong>Régulateur</strong> : gère les conflits et crises</li>
+                        <li><strong>Répartiteur de ressources</strong> : alloue les moyens</li>
+                        <li><strong>Négociateur</strong> : représente l'organisation dans les négociations</li>
+                    </ul>
+                </div>
+
+                <h3>Les fonctions clés du manager</h3>
+                <div class="card">
+                    <ul>
+                        <li>Comprendre son environnement</li>
+                        <li>Organiser l'équipe</li>
+                        <li>Prendre des décisions</li>
+                        <li>Négocier</li>
+                        <li>Orienter l'action collective</li>
+                        <li>Animer une équipe</li>
+                        <li>Développer l'autonomie</li>
+                        <li>Agir sur la motivation</li>
+                        <li>Entretenir des relations efficaces</li>
+                    </ul>
+                </div>
+
+                <h3>⚖️ Spécialisation vs Polyvalence</h3>
+
+                <div class="card">
+                    <h4>✅ Polyvalence - Avantages</h4>
+                    <ul>
+                        <li>Favorise l'adaptabilité et la flexibilité</li>
+                        <li>Facilite la communication</li>
+                        <li>Permet une vision globale</li>
+                        <li>Développe la solidarité dans l'équipe</li>
+                        <li>Enrichit les tâches et réduit la monotonie</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h4>❌ Spécialisation - Inconvénients</h4>
+                    <ul>
+                        <li>Raréfie les échanges entre experts</li>
+                        <li>N'incite pas à la communication</li>
+                        <li>Ne développe pas la solidarité</li>
+                        <li>Oblige le manager à assumer beaucoup de coordination</li>
+                        <li>Position de régulation permanente</li>
+                        <li>Ne crée pas de valeur ajoutée</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- MODES DE MANAGEMENT -->
+            <div id="modes" class="section">
+                <h2>Les 4 modes de management</h2>
+
+                <div class="mode-grid">
+                    <div class="card mode-card directif">
+                        <h4>🎯 Mode DIRECTIF</h4>
+                        <p><strong>Caractéristiques :</strong></p>
+                        <ul>
+                            <li>S'engage personnellement</li>
+                            <li>Donne des instructions</li>
+                            <li>Structure l'activité</li>
+                            <li>Fixe des objectifs précis, donne des exemples</li>
+                            <li>Définit des critères précis d'évaluation</li>
+                            <li>Assume seul les décisions</li>
+                            <li>Privilégie l'information descendante</li>
+                        </ul>
+                        <p><strong>📌 Quand l'utiliser :</strong> Situations d'urgence, collaborateurs débutants, tâches critiques</p>
+                    </div>
+
+                    <div class="card mode-card persuasif">
+                        <h4>⚠️ Mode PERSUASIF (risque utopiste)</h4>
+                        <p><strong>Caractéristiques :</strong></p>
+                        <ul>
+                            <li>Manage en fonction de principes</li>
+                            <li>Confond explication et adhésion</li>
+                            <li>Met son équipe sous pression</li>
+                            <li>N'accepte pas la différence</li>
+                            <li>Valorise le changement pour le changement</li>
+                            <li>Ne tient pas suffisamment compte de la réalité</li>
+                        </ul>
+                        <p><strong>⚠️ Attention :</strong> Peut créer de la résistance et du désengagement</p>
+                    </div>
+
+                    <div class="card mode-card delegatif">
+                        <h4>📋 Mode DÉLÉGATIF (risque bureaucratique)</h4>
+                        <p><strong>Caractéristiques :</strong></p>
+                        <ul>
+                            <li>S'isole de son équipe</li>
+                            <li>Confond activité et résultat</li>
+                            <li>Administre plutôt que gérer les hommes</li>
+                            <li>Communique essentiellement par écrit</li>
+                            <li>Définit des rôles trop rigides</li>
+                            <li>Ne remet pas en cause l'organisation</li>
+                        </ul>
+                        <p><strong>⚠️ Attention :</strong> Peut créer de la distance et réduire la cohésion</p>
+                    </div>
+
+                    <div class="card mode-card participatif">
+                        <h4>✨ Mode PARTICIPATIF</h4>
+                        <p><strong>Caractéristiques :</strong></p>
+                        <ul>
+                            <li>Favorise le travail d'équipe</li>
+                            <li>Propose des projets collectifs</li>
+                            <li>Écoute les remontées d'information</li>
+                            <li>Favorise l'expression</li>
+                            <li>Prend en compte les besoins individuels</li>
+                            <li>Valorise et développe les compétences</li>
+                            <li>Associe l'équipe aux décisions</li>
+                            <li>Privilégie la qualité du climat</li>
+                        </ul>
+                        <p><strong>✅ Avantages :</strong> Meilleur engagement, développement des compétences, climat positif</p>
+                    </div>
+                </div>
+
+                <h3>📝 Déléguer et contrôler</h3>
+
+                <div class="card">
+                    <h4>Définition de la délégation</h4>
+                    <p>C'est responsabiliser un collaborateur direct en lui confiant une activité, une mission en :</p>
+                    <ul>
+                        <li>Traduisant la mission en termes d'objectifs</li>
+                        <li>Définissant le niveau d'autonomie</li>
+                        <li>Précisant le cadre de cohérence</li>
+                        <li>Clarifiant les modalités et la fréquence du contrôle</li>
+                    </ul>
+                </div>
+
+                <h3>📊 Les 6 critères d'évaluation des compétences</h3>
+
+                <div class="card">
+                    <ol>
+                        <li><strong>Technicité</strong> : maîtrise des compétences techniques</li>
+                        <li><strong>Implication</strong> : engagement dans le travail</li>
+                        <li><strong>Efficience</strong> : optimisation des ressources</li>
+                        <li><strong>Autonomie</strong> : capacité à travailler seul</li>
+                        <li><strong>Dimension relationnelle</strong> : qualité des interactions</li>
+                        <li><strong>Dimension managériale</strong> : pour les salariés en situation d'encadrement</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- MODELE DISC -->
+            <div id="disc" class="section">
+                <h2>Le modèle DISC</h2>
+
+                <div class="highlight">
+                    <p><strong>Basé sur :</strong> La théorie des Traits de Caractère de William Marston, à partir des travaux de Carl Gustav Jung</p>
+                    <p><strong>Objectif :</strong> Comprendre son propre mode de fonctionnement et avoir des repères pour mieux comprendre l'autre</p>
+                </div>
+
+                <h3>Les 4 profils DISC</h3>
+
+                <div class="disc-grid">
+                    <div class="disc-card dominance">
+                        <h4>D - DOMINANCE</h4>
+                        <p><strong>Orienté :</strong> FAITS, RÉSULTATS</p>
+                        <p><strong>Préférence :</strong> ACTION</p>
+                        <p><strong>Aime :</strong> Surmonter les difficultés</p>
+                        <p><strong>Caractère :</strong> Déterminé, direct, résolu</p>
+                    </div>
+
+                    <div class="disc-card influence">
+                        <h4>I - INFLUENCE</h4>
+                        <p><strong>Orienté :</strong> ACTION</p>
+                        <p><strong>Préférence :</strong> ACTION</p>
+                        <p><strong>Aime :</strong> Prendre du plaisir</p>
+                        <p><strong>Caractère :</strong> Enthousiaste, optimiste, communicatif</p>
+                    </div>
+
+                    <div class="disc-card stabilite">
+                        <h4>S - STABILITÉ</h4>
+                        <p><strong>Orienté :</strong> RELATION HUMAINE</p>
+                        <p><strong>Préférence :</strong> RÉFLEXION</p>
+                        <p><strong>Aime :</strong> Travailler tous ensemble</p>
+                        <p><strong>Caractère :</strong> Patient, constant, loyal</p>
+                    </div>
+
+                    <div class="disc-card conformite">
+                        <h4>C - CONFORMITÉ</h4>
+                        <p><strong>Orienté :</strong> FAITS, RÉSULTATS</p>
+                        <p><strong>Préférence :</strong> RÉFLEXION</p>
+                        <p><strong>Aime :</strong> Suivre des règles précises</p>
+                        <p><strong>Caractère :</strong> Précis, analytique, méthodique</p>
+                    </div>
+                </div>
+
+                <h3>🎯 Facteurs de motivation des collaborateurs</h3>
+
+                <div class="card">
+                    <ul>
+                        <li><strong>Motivation</strong> : reconnaissance et sens du travail</li>
+                        <li><strong>Pouvoir</strong> : responsabilités et autonomie</li>
+                        <li><strong>Ambiance</strong> : qualité de l'environnement</li>
+                        <li><strong>Expertise</strong> : développement des compétences</li>
+                        <li><strong>Utilité</strong> : sentiment d'être utile</li>
+                        <li><strong>Défi</strong> : challenges stimulants</li>
+                        <li><strong>Réseau</strong> : relations professionnelles</li>
+                        <li><strong>Argent</strong> : rémunération</li>
+                        <li><strong>Intérêt du sujet</strong> : passion pour le contenu</li>
+                        <li><strong>Relation</strong> : qualité des relations</li>
+                        <li><strong>Apprentissage</strong> : opportunités d'apprendre</li>
+                        <li><strong>Autonomie</strong> : liberté d'action</li>
+                        <li><strong>Reconnaissance</strong> : valorisation du travail</li>
+                    </ul>
+                </div>
+
+                <h3>🤝 Management hors hiérarchique en informatique</h3>
+
+                <div class="highlight">
+                    <p><strong>10 comportements clés pour réussir ce type de management :</strong></p>
+                </div>
+
+                <div class="card">
+                    <h4>1. Faire confiance</h4>
+                    <p>Établir une relation de confiance mutuelle avec les collaborateurs.</p>
+                </div>
+
+                <div class="card">
+                    <h4>2. Démontrer que la participation contribue aux motivations</h4>
+                    <p>Montrer que la participation contribue toujours à satisfaire les motivations des acteurs.</p>
+                </div>
+
+                <div class="card">
+                    <h4>3. Valoriser l'acteur</h4>
+                    <p>Reconnaître son expertise et son apport à l'équipe.</p>
+                </div>
+
+                <div class="card">
+                    <h4>4. Montrer la réalité du projet</h4>
+                    <p>Montrer que le projet a une réalité concrète dans l'entreprise.</p>
+                </div>
+            </div>
+
+            <!-- COMMUNICATION -->
+            <div id="communication" class="section">
+                <h2>Le processus de communication</h2>
+
+                <div class="highlight">
+                    <p><strong>La communication est un flux</strong> entre émetteur et récepteur en 7 étapes</p>
+                </div>
+
+                <div class="process-step">
+                    <div class="process-number">1</div>
+                    <div>
+                        <strong>L'émetteur</strong>
+                        <p>Possède le savoir/expérience</p>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <div class="process-number">2</div>
+                    <div>
+                        <strong>Le codage</strong>
+                        <p>Formulation du message</p>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <div class="process-number">3</div>
+                    <div>
+                        <strong>Le message</strong>
+                        <p>Contenu à transmettre</p>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <div class="process-number">4</div>
+                    <div>
+                        <strong>Le canal de communication</strong>
+                        <p>Moyen utilisé pour transmettre</p>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <div class="process-number">5</div>
+                    <div>
+                        <strong>Le décodage</strong>
+                        <p>Interprétation par le récepteur</p>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <div class="process-number">6</div>
+                    <div>
+                        <strong>Le récepteur</strong>
+                        <p>Destinataire du message</p>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <div class="process-number">7</div>
+                    <div>
+                        <strong>Le feed-back</strong>
+                        <p>Retour d'information</p>
+                    </div>
+                </div>
+
+                <h3>🎯 L'écoute active</h3>
+
+                <div class="card">
+                    <p><strong>Sans écoute active, il n'y a pas de communication efficace.</strong></p>
+
+                    <h4>Deux techniques simples :</h4>
+                    <ol>
+                        <li><strong>Se montrer réceptif aux sensations autant qu'au contenu</strong>
+                            <ul>
+                                <li>Être attentif au langage non-verbal</li>
+                                <li>Observer les expressions, le ton, les gestes</li>
+                            </ul>
+                        </li>
+                        <li><strong>Poser des questions pour s'assurer d'avoir bien compris</strong>
+                            <ul>
+                                <li>Reformuler pour vérifier la compréhension</li>
+                                <li>Clarifier les points ambigus</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+
+                <h3>✅ Techniques pour communiquer efficacement</h3>
+
+                <div class="card">
+                    <h4>1. Utiliser le feed-back</h4>
+                    <p>Permet de vérifier la conformité du message. Les signaux non-verbaux permettent de voir la compréhension.</p>
+                </div>
+
+                <div class="card">
+                    <h4>2. Simplifier le langage</h4>
+                    <p>Utiliser des termes compréhensibles, adapter son vocabulaire au public.</p>
+                </div>
+
+                <div class="card">
+                    <h4>3. Écouter activement</h4>
+                    <p>Capter le sens complet sans porter de jugement prématuré.</p>
+                </div>
+
+                <div class="card">
+                    <h4>4. Contenir ses émotions</h4>
+                    <p>Sachez sentir quand vos émotions vous échappent. Abstenez-vous de communiquer tant que vous n'êtes pas calme.</p>
+                </div>
+
+                <div class="card">
+                    <h4>5. Mettre l'accent sur les signaux non-verbaux</h4>
+                    <p>Vos gestes en disent plus que vos paroles. Harmonisez verbal et non-verbal.</p>
+                </div>
+
+                <h3>⚖️ Communiquer de manière éthique</h3>
+
+                <div class="card">
+                    <p>Répondre aux questions suivantes :</p>
+                    <ul>
+                        <li>La situation est-elle définie de manière honnête et précise ?</li>
+                        <li>Pourquoi le message est-il communiqué ?</li>
+                        <li>Comment les personnes affectées sont-elles impactées ?</li>
+                        <li>Cette décision éthique aujourd'hui le sera-t-elle à l'avenir ?</li>
+                        <li>Ce message permet-il de faire au mieux avec les connaissances actuelles ?</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- OBSTACLES -->
+            <div id="obstacles" class="section">
+                <h2>Les 6 obstacles à la communication</h2>
+
+                <div class="card">
+                    <h4>1️⃣ Le filtrage</h4>
+                    <p>Les managers filtrent l'information pour assurer un accueil favorable. L'importance dépend de la culture d'entreprise ou du mode de management.</p>
+                </div>
+
+                <div class="card">
+                    <h4>2️⃣ La perception sélective</h4>
+                    <p>Le récepteur sélectionne ce qu'il voit ou entend en fonction de :</p>
+                    <ul>
+                        <li>Son besoin</li>
+                        <li>Sa motivation</li>
+                        <li>Son expérience</li>
+                        <li>Sa culture et son origine</li>
+                        <li>Toutes autres caractéristiques personnelles</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h4>3️⃣ La surcharge d'information</h4>
+                    <p>Chaque individu a une capacité de traitement limitée. La surcharge survient quand la quantité d'information transmise excède les capacités du récepteur.</p>
+                </div>
+
+                <div class="card">
+                    <h4>4️⃣ Les émotions</h4>
+                    <p>L'humeur du récepteur influence l'interprétation. Selon qu'on soit heureux ou déprimé, maussade ou euphorique, on interprétera différemment le message.</p>
+                </div>
+
+                <div class="card">
+                    <h4>5️⃣ Le langage</h4>
+                    <p>Certains mots ont un sens différent selon :</p>
+                    <ul>
+                        <li>L'âge</li>
+                        <li>L'éducation</li>
+                        <li>Les origines culturelles</li>
+                        <li>Le jargon de l'entreprise ou du métier</li>
+                    </ul>
+                    <p><strong>Important :</strong> Accepter ces différences et adapter sa communication.</p>
+                </div>
+
+                <div class="card">
+                    <h4>6️⃣ La culture du pays</h4>
+                    <p>Il existe des modes de communication propres à chaque pays. Il faut connaître les codes pour communiquer efficacement.</p>
+                </div>
+
+                <h3>💻 Communication et technologies</h3>
+
+                <div class="highlight">
+                    <p><strong>Être un communicant efficace = être connecté</strong></p>
+                    <ul>
+                        <li>Les courriels peuvent dévorer le temps mais sont indispensables</li>
+                        <li>Les managers utilisent aussi blogs, réseaux sociaux, etc.</li>
+                        <li><strong>⚠️ Attention aux problèmes juridiques et de sécurité</strong></li>
+                        <li><strong>⚠️ Problème du manque d'interactions personnelles</strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- QUIZ -->
+            <div id="quiz" class="section">
+                <h2>📝 Questions de révision</h2>
+
+                <h3>Management</h3>
+
+                <div class="quiz-card">
+                    <h4>Question 1</h4>
+                    <p>Citez et expliquez les 3 catégories de rôles du manager selon Mintzberg</p>
+                </div>
+
+                <div class="quiz-card">
+                    <h4>Question 2</h4>
+                    <p>Quelles sont les différences entre polyvalence et spécialisation ?</p>
+                </div>
+
+                <div class="quiz-card">
+                    <h4>Question 3</h4>
+                    <p>Comparez les 4 modes de management (directif, persuasif, délégatif, participatif)</p>
+                </div>
+
+                <div class="quiz-card">
+                    <h4>Question 4</h4>
+                    <p>Quels sont les 4 éléments clés pour définir une délégation ?</p>
+                </div>
+
+                <div class="quiz-card">
+                    <h4>Question 5</h4>
+                    <p>Expliquez les 4 profils du modèle DISC</p>
+                </div>
+
+                <div class="quiz-card">
+                    <h4>Question 6</h4>
+                    <p>Quels sont les 6 critères d'évaluation des compétences ?</p>
+                </div>
+
+                <h3>Communication</h3>
+
+                <div class="quiz-card">
+                    <h4>Question 7</h4>
+                    <p>Décrivez les 7 étapes du processus de communication</p>
+                </div>
+
+                <div class="quiz-card">
+                    <h4>Question 8</h4>
+                    <p>Listez et expliquez les 6 obstacles à la communication</p>
+                </div>
+
+                <div class="quiz-card">
+                    <h4>Question 9</h4>
+                    <p>Qu'est-ce que l'écoute active et comment la pratiquer ?</p>
+                </div>
+
+                <div class="quiz-card">
+                    <h4>Question 10</h4>
+                    <p>Quelles sont les 5 techniques pour surmonter les obstacles à la communication ?</p>
+                </div>
+
+                <div class="quiz-card">
+                    <h4>Question 11</h4>
+                    <p>Comment communiquer de manière éthique ?</p>
+                </div>
+
+                <div class="quiz-card">
+                    <h4>Question 12</h4>
+                    <p>Quels sont les défis de la communication à l'ère des technologies ?</p>
+                </div>
+
+                <div class="highlight">
+                    <strong>💡 Méthodologie de révision :</strong>
+                    <ol>
+                        <li>Lire attentivement chaque section</li>
+                        <li>Créer des fiches pour chaque concept clé</li>
+                        <li>Faire des schémas pour visualiser les processus</li>
+                        <li>S'auto-tester avec ces questions</li>
+                        <li>Relier les concepts entre eux</li>
+                        <li>Penser à des exemples concrets</li>
+                    </ol>
+                </div>
+
+                <div class="card">
+                    <h4>🎯 Bon courage pour vos révisions !</h4>
+                    <p>N'oubliez pas : la régularité est la clé du succès. Révisez un peu chaque jour plutôt que tout d'un coup !</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active class from all buttons
+            document.querySelectorAll('nav button').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

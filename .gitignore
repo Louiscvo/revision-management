@@ -1,0 +1,10 @@
+# Ignorer toutes les images
+*.jpeg
+*.jpg
+*.png
+*.gif
+
+# Garder seulement les fichiers HTML et MD
+!index.html
+!README.md
+!REVISION_Management_Communication.md
